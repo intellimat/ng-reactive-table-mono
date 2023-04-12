@@ -1,0 +1,16 @@
+version: "3"
+services:
+  node-app:
+    build:
+      context: ./ng-reactive-table-api
+    ports:
+      - "3000:3000"
+    container_name: ng-reactive-table-api-server
+  ui:
+    build:
+      context: ./ng-reactive-table
+      args:
+        - mode=development # when mode!=development the UI will use a cloud hosted api, not the local server
+    ports:
+      - "80:80"
+    container_name: ng-reactive-table-ui

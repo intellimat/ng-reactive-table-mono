@@ -1,0 +1,58 @@
+<div class="outmost-container">
+  <div class="buttons-container">
+    <mat-button-toggle-group
+      name="view selector"
+      aria-label="view type"
+      [value]="view"
+      (change)="onChange($event)"
+    >
+      <mat-button-toggle value="cardsView">Cards view</mat-button-toggle>
+      <mat-button-toggle value="tableView">Table view</mat-button-toggle>
+    </mat-button-toggle-group>
+    <button
+      mat-raised-button
+      color="primary"
+      name="add user"
+      aria-label="add user"
+      (click)="onAddUser()"
+    >
+      Add user
+    </button>
+  </div>
+  <div class="form-paginator-container">
+    <form>
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput value="" [formControl]="search" />
+      </mat-form-field>
+    </form>
+    <mat-paginator
+      (page)="handlePageEvent($event)"
+      [length]="(filteredDataLength$ | async) || 0"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      aria-label="Select page"
+    >
+      >
+    </mat-paginator>
+  </div>
+
+  <ng-container
+    *ngIf="view === 'cardsView'; then cardsTemplate; else tableTemplate"
+  ></ng-container>
+
+  <ng-template #cardsTemplate>
+    <app-users-cards
+      [data]="(paginatedData$ | async) || []"
+      [loading]="(loading$ | async) || false"
+    ></app-users-cards>
+  </ng-template>
+
+  <ng-template #tableTemplate>
+    <app-users-table
+      [data]="(paginatedData$ | async) || []"
+      [loading]="(loading$ | async) || false"
+    >
+    </app-users-table>
+  </ng-template>
+</div>

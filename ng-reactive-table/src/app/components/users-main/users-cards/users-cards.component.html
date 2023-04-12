@@ -1,0 +1,31 @@
+<div class="outmost-container">
+  <ng-container
+    *ngIf="loading; then loadingTemplate; else loadedTemplate"
+  ></ng-container>
+
+  <ng-template #loadingTemplate>
+    <p class="loading-message">Loading users</p>
+    <p>(this might take a while due to server startup, please wait)</p>
+    <ngx-skeleton-loader
+      [theme]="{
+        height: '120px',
+        width: '220px',
+        borderRadius: '5%',
+        margin: '8px'
+      }"
+      appearance="circle"
+      count="15"
+    ></ngx-skeleton-loader>
+  </ng-template>
+
+  <ng-template #loadedTemplate>
+    <div class="cards-container">
+      <app-card
+        *ngFor="let user of data"
+        img="assets/defaultAvatar.png"
+        [subtitle]="getTag(user)"
+        [title]="user.name"
+        [footer]="user.email"
+      ></app-card></div
+  ></ng-template>
+</div>

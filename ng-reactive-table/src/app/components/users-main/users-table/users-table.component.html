@@ -1,0 +1,184 @@
+<ng-container
+  *ngTemplateOutlet="
+    containerTemplate;
+    context: { idsOfUsersBeingUpdated: (idsOfUsersBeingUpdated | async) }
+  "
+></ng-container>
+
+<ng-template
+  #containerTemplate
+  let-idsOfUsersBeingUpdated="idsOfUsersBeingUpdated"
+>
+  <p class="loading-message" *ngIf="loading">Loading users</p>
+  <p *ngIf="loading">
+    (this might take a while due to server startup, please wait)
+  </p>
+  <form [formGroup]="tableFormGroup" *ngIf="!loading && data.length > 0">
+    <table
+      mat-table
+      [dataSource]="tableData"
+      class="mat-elevation-z8"
+      formArrayName="tableRows"
+    >
+      <!-- Id Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Id</th>
+        <td mat-cell *matCellDef="let element">
+          <ngx-skeleton-loader
+            *ngIf="
+              !element.isEditable && idsOfUsersBeingUpdated.includes(element.id)
+            "
+            [theme]="{ marginTop: '15px' }"
+            appearance="line"
+            count="1"
+          ></ngx-skeleton-loader>
+          <span *ngIf="!idsOfUsersBeingUpdated.includes(element.id)">{{
+            element.id
+          }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [ngClass]="{ 'align-vertical-center': element.isEditable }"
+          [formGroupName]="i"
+        >
+          <ngx-skeleton-loader
+            [theme]="{ marginTop: '15px' }"
+            *ngIf="
+              !element.isEditable && idsOfUsersBeingUpdated.includes(element.id)
+            "
+            appearance="line"
+            count="1"
+          ></ngx-skeleton-loader>
+          <span
+            *ngIf="
+              !element.isEditable &&
+              !idsOfUsersBeingUpdated.includes(element.id)
+            "
+            >{{ element.name }}</span
+          >
+          <mat-form-field *ngIf="element.isEditable">
+            <input matInput value="element.name" formControlName="name" />
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Email Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [ngClass]="{ 'align-vertical-center': element.isEditable }"
+          [formGroupName]="i"
+        >
+          <ngx-skeleton-loader
+            *ngIf="
+              !element.isEditable && idsOfUsersBeingUpdated.includes(element.id)
+            "
+            [theme]="{ marginTop: '15px' }"
+            appearance="line"
+            count="1"
+          ></ngx-skeleton-loader>
+          <span
+            *ngIf="
+              !element.isEditable &&
+              !idsOfUsersBeingUpdated.includes(element.id)
+            "
+            >{{ element.email }}</span
+          >
+          <mat-form-field *ngIf="element.isEditable">
+            <input matInput value="element.email" formControlName="email" />
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Department Column -->
+      <ng-container matColumnDef="department">
+        <th mat-header-cell *matHeaderCellDef>Department</th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [ngClass]="{ 'align-vertical-center': element.isEditable }"
+          [formGroupName]="i"
+        >
+          <ngx-skeleton-loader
+            *ngIf="
+              !element.isEditable && idsOfUsersBeingUpdated.includes(element.id)
+            "
+            [theme]="{ marginTop: '15px' }"
+            appearance="line"
+            count="1"
+          ></ngx-skeleton-loader>
+          <span
+            *ngIf="
+              !element.isEditable &&
+              !idsOfUsersBeingUpdated.includes(element.id)
+            "
+            >{{ element.department }}</span
+          >
+          <mat-form-field *ngIf="element.isEditable">
+            <input
+              matInput
+              value="element.department"
+              formControlName="department"
+            />
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Operations Column -->
+      <ng-container matColumnDef="operations">
+        <th mat-header-cell *matHeaderCellDef>Operations</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <ngx-skeleton-loader
+            *ngIf="idsOfUsersBeingUpdated.includes(element.id)"
+            [theme]="{ marginTop: '15px' }"
+            appearance="line"
+            count="1"
+          ></ngx-skeleton-loader>
+          <div *ngIf="!idsOfUsersBeingUpdated.includes(element.id)">
+            <button
+              mat-icon-button
+              [disabled]="element.isEditable && !tableRows.at(i).valid"
+              (click)="onEdit(element, i)"
+              aria-label="Edit row"
+            >
+              <mat-icon
+                aria-hidden="false"
+                [ariaLabel]="element.isEditable ? 'confirm update' : 'edit row'"
+                [fontIcon]="element.isEditable ? 'check' : 'edit'"
+              ></mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="
+                element.isEditable ? onCancel(element) : openDialog(element)
+              "
+              aria-label="Delete row"
+            >
+              <mat-icon
+                aria-hidden="false"
+                [ariaLabel]="
+                  element.isEditable ? 'cancel update' : 'delete row'
+                "
+                [fontIcon]="element.isEditable ? 'cancel' : 'delete'"
+              ></mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </form>
+  <p *ngIf="!loading && data.length === 0">
+    No users were found that match the current filter.
+  </p>
+</ng-template>
