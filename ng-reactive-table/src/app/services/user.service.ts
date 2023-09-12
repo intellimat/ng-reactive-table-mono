@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { userUrl, apiBaseUrl, environment } from 'src/environments/environment';
+import { userUrl, apiBaseUrl } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { RequestBodyUser, User } from '../models/user.model';
 

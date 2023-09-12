@@ -27,6 +27,7 @@
       </mat-form-field>
     </form>
     <mat-paginator
+      #paginator
       (page)="handlePageEvent($event)"
       [length]="(filteredDataLength$ | async) || 0"
       [pageSize]="pageSize"

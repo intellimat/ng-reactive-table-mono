@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Store } from '@ngrx/store';
 import { filter, map } from 'rxjs';
 import { loadUsers, setSearchWord } from 'src/app/store/users/users.actions';
@@ -35,6 +35,8 @@ export class UsersMainComponent implements OnInit {
     .select(selectFilteredUsers)
     .pipe(map((users) => users.length));
 
+  @ViewChild('paginator') paginator?: MatPaginator;
+
   constructor(private store: Store, private dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -52,6 +54,11 @@ export class UsersMainComponent implements OnInit {
     });
   }
 
+  private goToFirstPage() {
+    this.pageIndex = 0;
+    this.paginator?.firstPage();
+  }
+
   private updateUsersState() {
     this.search.valueChanges
       .pipe(
@@ -60,6 +67,7 @@ export class UsersMainComponent implements OnInit {
         map((searchWord: string) => searchWord.toLowerCase())
       )
       .subscribe((searchWord) => {
+        this.goToFirstPage();
         this.store.dispatch(setSearchWord({ searchWord }));
       });
   }
